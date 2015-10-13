@@ -1,3 +1,76 @@
+def binary_search(l, value):
+    low = 0
+    high = len(l)-1
+    while low <= high:
+        mid = (low+high)//2
+        if l[mid] > value: high = mid-1
+        elif l[mid] < value: low = mid+1
+        else: return mid
+    return -1
+
+#=======================================================================
+#  Author: Isai Damier
+#  Title: Radix Sort
+#  Project: geekviewpoint
+#  Package: algorithms
+#
+#  Statement:
+#  Given a disordered list of integers, rearrange them in natural order.
+#
+#  Sample Input: [18,5,100,3,1,19,6,0,7,4,2]
+#
+#  Sample Output: [0,1,2,3,4,5,6,7,18,19,100]
+#
+#  Time Complexity of Solution:
+#  Best Case O(kn); Average Case O(kn); Worst Case O(kn),
+#  where k is the length of the longest number and n is the
+#  size of the input array.
+#
+#  Note: if k is greater than log(n) then an nlog(n) algorithm would
+#  be a better fit. In reality we can always change the radix
+#  to make k less than log(n).
+#
+#  Approach:
+#  radix sort, like counting sort and bucket sort, is an integer based
+#  algorithm (i.e. the values of the input array are assumed to be
+#  integers). Hence radix sort is among the fastest sorting algorithms
+#  around, in theory. The particular distinction for radix sort is
+#  that it creates a bucket for each cipher (i.e. digit); as such,
+#  similar to bucket sort, each bucket in radix sort must be a
+#  growable list that may admit different keys.
+#
+#  For decimal values, the number of buckets is 10, as the decimal
+#  system has 10 numerals/cyphers (i.e. 0,1,2,3,4,5,6,7,8,9). Then
+#  the keys are continuously sorted by significant digits.
+#=======================================================================
+ def radixsort( aList ):
+  RADIX = 10
+  maxLength = False
+  tmp , placement = -1, 1
+
+  while not maxLength:
+    maxLength = True
+    # declare and initialize buckets
+    buckets = [list() for _ in range( RADIX )]
+
+    # split aList between lists
+    for  i in aList:
+      tmp = i / placement
+      buckets[tmp % RADIX].append( i )
+      if maxLength and tmp > 0:
+        maxLength = False
+
+    # empty lists into aList array
+    a = 0
+    for b in range( RADIX ):
+      buck = buckets[b]
+      for i in buck:
+        aList[a] = i
+        a += 1
+
+    # move to next digit
+    placement *= RADIX
+
 """
 Find the most frequent integer in an array
 """
@@ -499,3 +572,44 @@ def klargest(k, xs):
         xs = [x for x in xs if x != maximum]
         k -= 1
     return maximum
+
+
+def minimumEditDistance(s1,s2):
+    if len(s1) > len(s2):
+        s1,s2 = s2,s1
+    distances = range(len(s1) + 1)
+    for index2,char2 in enumerate(s2):
+        newDistances = [index2+1]
+        for index1,char1 in enumerate(s1):
+            if char1 == char2:
+                newDistances.append(distances[index1])
+            else:
+                newDistances.append(1 + min((distances[index1],
+                                             distances[index1+1],
+                                             newDistances[-1])))
+        distances = newDistances
+    return distances[-1]
+
+print(minimumEditDistance("kitten","sitting"))
+print(minimumEditDistance("rosettacode","raisethysword"))
+
+"""
+Permutations
+"""
+def permutations(string, step = 0):
+
+    # if we've gotten to the end, print the permutation
+    if step == len(string):
+        print "".join(string)
+
+    # everything to the right of step has not been swapped yet
+    for i in range(step, len(string)):
+
+        # copy the string (store as array)
+        string_copy = [character for character in string]
+
+        # swap the current index with the step
+        string_copy[step], string_copy[i] = string_copy[i], string_copy[step]
+
+        # recurse on the portion of the string that has not been swapped yet (now it's index will begin with step + 1)
+        permutations(string_copy, step + 1)

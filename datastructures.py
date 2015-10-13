@@ -12,6 +12,42 @@ We will review
 """
 All Sorting Algorithms
 """
+"""
+Radix sort complexity is O(wn) for n keys which are integers of word size w. Sometimes w is presented as a constant, which would make radix sort better (for sufficiently large n) than the best comparison-based sorting algorithms, which all perform O(n log n) comparisons to sort n keys. However, in general w cannot be considered a constant: if all n keys are distinct, then w has to be at least log n for a random-access machine to be able to store them in memory, which gives at best a time complexity O(n log n).[2] That would seem to make radix sort at most equally efficient as the best comparison-based sorts (and worse if keys are much longer than log n).
+"""
+def radixsort( aList ):
+  RADIX = 10
+  maxLength = False
+  tmp , placement = -1, 1
+
+  while not maxLength:
+    maxLength = True
+    # declare and initialize buckets
+    buckets = [list() for _ in range( RADIX )]
+
+    # split aList between lists
+    for  i in aList:
+      tmp = i // placement
+      print ("i is " , i)
+      print ("placement is " , placement)
+      print ("tmp is ", tmp)
+      print ("tmp % RADIX is ", tmp % RADIX)
+      buckets[tmp % RADIX].append( i )
+      if maxLength and tmp > 0:
+        maxLength = False
+
+    # empty lists into aList array
+    a = 0
+    for b in range( RADIX ):
+      buck = buckets[b]
+      for i in buck:
+        aList[a] = i
+        a += 1
+
+    # move to next digit
+    placement *= RADIX
+  return aList
+
 def mergesort(arr):
     """ perform mergesort on a list of numbers
 
@@ -192,7 +228,35 @@ class SinglyLinkedList(object):
             current = current.next
         print None
 
+    def removeDuplicates(self):
+        current = self.head
+        duplicates = {}
+        previous = None
 
+        while current is not None:
+            if current.data in duplicates:
+                previous.next = current.next
+            else:
+                duplicates[current.data] = True
+                previous = current
+            current = current.next
+
+    def kthToLast(self, k):
+        n1 = self.head
+        n2 = self.head
+
+        for i in range(k - 1):
+            if n2 is None:
+                return None
+            n2 = n2.next
+
+        if n2 is None:
+            return None
+
+        while n2.next is not None:
+            n1 = n1.next
+            n2 = n2.next
+        return n1
 
 
 class DoublyLinkedList(object):

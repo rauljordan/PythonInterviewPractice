@@ -1,97 +1,71 @@
 class Node(object):
-    def __init__(self, data, left, right):
+    def __init__(self, data, next, prev=None):
         self.data = data
-        self.left = left
-        self.right = right
-class BinaryTree(object):
+        self.next = next
+        self.prev = prev
 
+class SinglyLinkedList(object):
     def __init__(self):
-        self.root = None
-
-    def insert(self, value):
-        if self.root is None:
-            self.root = Node(value, None, None)
+        self.head = None
+        self.tail = None
+    def append(self, data):
+        n = Node(data, None)
+        if self.head is None:
+            self.head = self.tail = n
         else:
-            self.recursive_insert(value, self.root)
+            self.tail.next = n
+        self.tail = n
 
-    def recursive_insert(self, value, node):
-        if value < node.data:
-            if node.left is None:
-                node.left = Node(value, None, None)
+    def remove(self, data):
+        current = self.head
+        previous = None
+        while current is not None:
+            if current.data == data:
+                if previous is not None:
+                    previous.next = current.next
+                else:
+                    self.head = current.next
+            previous = current
+            current = current.next
+
+    def show(self):
+        current = self.head
+        while current is not None:
+            print current.data, "->",
+            current = current.next
+        print None
+
+    def removeDuplicates(self):
+        current = self.head
+        duplicates = {}
+        previous = None
+
+        while current is not None:
+            if current.data in duplicates:
+                previous.next = current.next
             else:
-                self.recursive_insert(value, node.left)
-        else:
-            if node.right is None:
-                node.right = Node(value, None, None)
-            else:
-                self.recursive_insert(value, node.right)
+                duplicates[current.data] = True
+                previous = current
+            current = current.next
 
-    def isBalanced(self):
-        return self.isBalancedRecursive(self.root)
+    def kthToLast(self, k):
+        n1 = self.head
+        n2 = self.head
 
-    def isBalancedRecursive(self, node):
-        if node.left is not None and node.right is not None:
-            return self.isBalancedRecursive(node.left) and self.isBalancedRecursive(node.right)
-        if node.left is None and node.right is None:
-            return True
-        if node.left is None and node.right is not None:
-            return False
-        if node.left is not None and node.right is None:
-            return False
+        for i in range(k - 1):
+            if n2 is None:
+                return None
+            n2 = n2.next
 
-    def getHeightRecursive(self, node, depth):
+        if n2 is None:
+            return None
 
-        if node.left is None and node.right is None:
-            return depth
-        if node.left is None and node.right is not None:
-            depth = depth + 1
-            return self.getHeightRecursive(node.right, depth)
-        if node.left is not None and node.right is None:
-            depth = depth + 1
-            return self.getHeightRecursive(node.left, depth)
-        else:
-            depth = depth + 1
-            return self.getHeightRecursive(node.left, depth) + self.getHeightRecursive(node.right, depth)
+        while n2.next is not None:
+            n1 = n1.next
+            n2 = n2.next
+        return n1
 
-    def getHeight(self):
-        return max([self.getHeightRecursive(self.root.left, 0),
-                        self.getHeightRecursive(self.root.right, 0)])
-
-    def printTree(self):
-        if(self.root != None):
-            self._printTree(self.root)
-
-    def _printTree(self, node):
-        if(node != None):
-            self._printTree(node.left)
-            print str(node.data) + ' '
-            self._printTree(node.right)
-
-    def bfs(self):
-        frontier = Queue()
-        explored = []
-        explored.append(self.root)
-        frontier.push(self.root)
-
-        # the list of linked lists at each depth
-        rootList = SinglyLinkedList()
-        rootList.append(self.root.data)
-        lists = [rootList]
-
-        while not frontier.isEmpty():
-            node = frontier.pop()
-            children = [node.left, node.right]
-            child_list = SinglyLinkedList()
-
-            if node not in explored:
-                for child in children:
-                    child_list.append(child)
-                    lists.append(child_list)
-                    frontier.push(child)
-        return lists
-
-b = BinaryTree()
-b.insert(3)
-b.insert(6)
-b.insert(5)
-b.printTree()
+s = SinglyLinkedList()
+s.append(1)
+s.append(4)
+s.append(5)
